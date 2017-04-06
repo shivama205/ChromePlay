@@ -13,6 +13,7 @@ function restartServer(server, app, port) {
 	server = exports.server;
 	app = exports.app; 
 	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(cors());
 	app.use(session({
 		name: "plugin",
