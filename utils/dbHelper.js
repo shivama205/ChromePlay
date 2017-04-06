@@ -9,6 +9,8 @@ var db;
 function initHelper() {
 	initUser();
 	initPlaylist();
+	initPlaylistSongsMap();
+	//initSongs();
 }
 
 function initUser () {
@@ -28,6 +30,52 @@ function initPlaylist () {
 	models.playlistModel = model;
 }
 
+function initPlaylistSongsMap(){
+	var schema = new Schema({
+		songID: String,
+		playlistID: String
+	});
+	var model = Model('playlist_songs_map', schema);
+	models.songsplaylistModel = model;
+}
+
+function initSongs() {
+	var schema = new Schema({
+		songURL: String
+	});
+	var model = Model('songs', schema)
+	models.songsModel = model;
+}
+
+exports.getSongs = function (options, cb) {
+	var model = models.songsplaylistModel;
+	var requestObj = {
+		playlistID: options.playlistID
+	};
+	model.find({}, function(err, docs) {
+		if (err) {
+			console.log(err);
+			cb({
+				status: 301,
+				success: false,
+				message: "database failure" + err
+			});
+		} else if (!docs) {
+			cb({
+				status: 400,
+				success: false,
+				message: "no songs found"
+			});
+		} else {
+			cb({
+				status: 200,
+				message: "OK",
+				success: true,
+				data: docs
+			});
+		}
+	});
+}
 exports.getPlaylist = function (options, cb) {
 	var model = models.playlistModel;
 	var requestObj = {
