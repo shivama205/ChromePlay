@@ -10,7 +10,7 @@ function initHelper() {
 	initUser();
 	initPlaylist();
 	initPlaylistSongsMap();
-	//initSongs();
+	initSongs();
 }
 
 function initUser () {
@@ -32,10 +32,10 @@ function initPlaylist () {
 
 function initPlaylistSongsMap(){
 	var schema = new Schema({
-		songID: String,
-		playlistID: String
+		playlistID: String,
+		songID: String
 	});
-	var model = Model('playlist_songs_map', schema);
+	var model = Model('playlist_songs_map', schema, 'playlist_songs_map');
 	models.songsplaylistModel = model;
 }
 
@@ -48,11 +48,13 @@ function initSongs() {
 }
 
 exports.getSongs = function (options, cb) {
-	var model = models.songsplaylistModel;
+	var model = models.songsplaylistModel;	
 	var requestObj = {
 		playlistID: options.playlistID
 	};
-	model.find({}, function(err, docs) {
+	console.log("requestObj " + JSON.stringify(requestObj));
+
+	model.find(requestObj, 'songID', function(err, docs) {
 		if (err) {
 			console.log(err);
 			cb({
@@ -70,14 +72,15 @@ exports.getSongs = function (options, cb) {
 			cb({
 				status: 200,
 				message: "OK",
-				success: true,
-				data: docs
+				success: true,	
+				data: docs							
 			});
 		}
-	});
+	});	
 }
 exports.getPlaylist = function (options, cb) {
 	var model = models.playlistModel;
+	console.log("model " + JSON.stringify(model));
 	var requestObj = {
 		userID: options.userID
 	};
