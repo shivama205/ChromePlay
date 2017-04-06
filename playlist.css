@@ -1,0 +1,38 @@
+@font-face { font-family: Myriad; src: url('http://freeshared.org/fonts/Myriad.OTF'); }
+body
+{
+	width: 390px;
+	height: 150px;
+    font-family: Myriad; 
+}
+.aligned { 
+	text-align: center; 
+	padding-bottom:28%; 
+}
+.aligned_input { 
+	text-align: center; 
+	padding-bottom:-10%; 
+}
+.aligned_text { 
+	text-align: center; 
+	font-size: 88%;
+}
+.no:hover {
+	background:none;
+} .no:active {
+	background: none;
+}
+#seconds {
+	font-size:10px;
+}
+.btn-custom {
+	background-color: black;
+	color:white;
+	transition-property: background, opacity;
+	transition-duration: 0.5s;
+} .btn-custom:hover, .btn-custom:active, .btn-custom:focus {
+	cursor: pointer;
+	opacity:0.5;
+	color:white;
+	//background-color:white;
+} 
