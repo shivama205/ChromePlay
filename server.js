@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var events = require('events');
+var cors = require('cors');
 var eventEmitter = new events.EventEmitter();
 
 function restartServer(server, app, port) {
@@ -12,6 +13,7 @@ function restartServer(server, app, port) {
 	server = exports.server;
 	app = exports.app; 
 	app.use(bodyParser.json());
+	app.use(cors());
 	app.use(session({
 		name: "plugin",
 		secret: "kshfihsdfkshfgiewhrbfkbsdjvksiydreiubfdiuvg",

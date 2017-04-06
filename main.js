@@ -1,6 +1,7 @@
 var API = [
 	require("./api/login"),
 	require("./api/signup"),
+	require("./api/getPlaylist")
 ];
 var server = require("./server");
 var db = require("./utils/dbHelper");
