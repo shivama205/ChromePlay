@@ -29,7 +29,9 @@ exports.init = function(server, db) {
 									url: songsDataArray[i].songURL
 								});
 							}
-							songsResponse.data = songDetailList;
+							songsResponse.data {
+								songs: songDetailList;
+							};
 						}
 						res.json(songsResponse);
 					});

@@ -9,7 +9,7 @@ exports.init = function(server, db) {
 				};
 				if (options.success) {
 					userData.data = {
-						userId: options.data._id
+						userID: options.data._id
 					};
 				} 
 				res.json(userData);
