@@ -16,7 +16,6 @@ server.events.on('app:created', function(app) {
 		var count = req.session.count;
 		req.session.count++;
 		var sid = req.sessionID;
-		console.log(sid);
 		res.send("hello world - " + count);
 	});
 });

@@ -47,12 +47,47 @@ function initSongs() {
 	models.songsModel = model;
 }
 
-exports.getSongs = function (options, cb) {
+exports.getSongURLS = function (options, cb) {
+	var model = models.songsModel;
+	var idObjects= [];
+	for(var i=0;i<options.length;i++) {
+		idObjects.push(mongoose.Types.ObjectId(options[i]));
+	}
+	var requestObj = {
+		'_id': {
+			$in: idObjects
+		}
+	};
+	model.find(requestObj, function(err,docs) {
+		if (err) {
+			console.log(err);
+			cb({
+				status: 301,
+				success: false,
+				message: "database failure" + err
+			});
+		} else if (!docs) {
+			cb({
+				status: 400,
+				success: false,
+				message: "no songs found"
+			});
+		} else {
+			cb({
+				status: 200,
+				message: "OK",
+				success: true,	
+				data: docs							
+			});
+		}
+	});
+};
+
+exports.getSongIDs = function (options, cb) {
 	var model = models.songsplaylistModel;	
 	var requestObj = {
 		playlistID: options.playlistID
 	};
-	console.log("requestObj " + JSON.stringify(requestObj));
 
 	model.find(requestObj, 'songID', function(err, docs) {
 		if (err) {
@@ -77,10 +112,10 @@ exports.getSongs = function (options, cb) {
 			});
 		}
 	});	
-}
+};
+
 exports.getPlaylist = function (options, cb) {
 	var model = models.playlistModel;
-	console.log("model " + JSON.stringify(model));
 	var requestObj = {
 		userID: options.userID
 	};
