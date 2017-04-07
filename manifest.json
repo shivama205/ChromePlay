@@ -7,7 +7,7 @@
 
   "browser_action": {
     "default_icon": "icon.png",
-    //"default_popup": "mediaplayer.html",
+    "default_popup": "mediaplayer2.html",
     "default_title": "Click Here!"
   },
   "permissions": [
@@ -16,7 +16,7 @@
   ],
 
   "background": {
-    "page": "mediaplayer.html",
+    "page": "mediaplayer2.html",
     "persistent": true
   },
 

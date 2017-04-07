@@ -1,0 +1,72 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+	<title>Mediaplyer</title>
+	<script type="text/javascript" src="audiojs/audiojs/audio.min.js"></script>
+	<script src="mediaplayer.js"></script>
+</head>
+<body>
+	<audio src="song.mp3" preload="auto" />
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MediaPlayer</title>
+	<meta charset="utf-8"/>
+	<!-- <link href='mediaplayer.css' rel='stylesheet' /> -->
+	<link href="playlist.css" rel="stylesheet" />
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+	
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+</head>
+<body>
+	<div class="col-md-12">
+		<audio id="audio" preload="auto"></audio>
+		<div class="btn-group">
+			<button onclick="Play('music.mp3','audio');" class="btn btn-custom"><span title="Play" id="play" class="glyphicon glyphicon-play aligned"></span></button>
+			<button onclick="Stop('music.mp3','audio');" class="btn btn-custom"><span title="Stop" id="stop" class="glyphicon glyphicon-stop aligned"></span></button>
+			<button onclick="Restart('music.mp3','audio');" class="btn btn-custom"><span title="Restart" id="restart" class="glyphicon glyphicon-step-backward aligned"></span></button>
+			<button onclick="Backward5('music.mp3','audio');" class="btn btn-custom"><span title="-5 seconds" id="play" class="glyphicon glyphicon-fast-backward aligned"></span></button>
+			<button onclick="Forward5('music.mp3','audio');" class="btn btn-custom"><span title="+5 seconds" id="play" class="glyphicon glyphicon-fast-forward aligned"></span></button>
+			<button onclick="Backward1('music.mp3','audio');" class="btn btn-custom"><span title="-1 second" id="play" class="glyphicon glyphicon-chevron-left aligned"></span></button>
+			<button onclick="Forward1('music.mp3','audio');" class="btn btn-custom"><span title="+1 second" id="play" class="glyphicon glyphicon-chevron-right aligned"></span></button>
+			<button onclick="VolumeUp('music.mp3','audio');" class="btn btn-custom"><span title="Volume Up" id="volumeup" class="glyphicon glyphicon-plus aligned"></span></button>
+			<button onclick="VolumeDown('music.mp3','audio');" class="btn btn-custom"><span title="Volume Down" id="volumedown" class="glyphicon glyphicon-minus aligned"></span></button>
+		</div>
+	</div>
+	<div class="row">
+		<div id="player" class="col-md-12">
+			<audio id="media-audio">
+				<source src="song.mp3" type="audio/mp3">
+			</audio>
+			<div id="player-controls">
+				<button id="play-pause-button" class="play" title="play">Play</button>
+				<button id="stop-button" title="Stop">Stop</button>
+				<progress id="progress-bar" value="0" min="0" max="100">0% Played</progress>
+			</div>
+			<div class="container">
+				<div class="panel-group">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+					            <a data-toggle="collapse" href="#playlist-div">Playlist</a>
+					        </h4>
+					    </div>
+						<div id="playlist-div" class="panel-collapse collapse">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="classes.js"></script>
+	<script type="text/javascript" src="mediaplayer.js"></script>
+</body>
+</html>
