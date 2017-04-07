@@ -1,37 +1,43 @@
+document.addEventListener("DOMContentLoaded", function() { initialise(); }, false);
+var username;
+var password;
+var submitButton;
+var spinner;
+var ajaxData;
+function initialise(){
+	username = document.getElementById("inputEmail");
+	password = document.getElementById("inputPassword");
+	submitButton = document.getElementById("submitButton");
+	spinner = document.getElementById("spinner");
+	spinner.style.display="none";
+	submitButton.addEventListener("click",ajaxHandler,false);
+}
+function ajaxHandler() {
+	submitButton.disabled=true;
+	spinner.style.display="block";
+	var usr = username.value;
+	var pswd = password.value;
+	ajaxCall('http://siddartj.desktop.amazon.com:8081/login',{
+		"username":usr,
+		"password":pswd
+	}, function(data, status) {
+		console.log(data);
+		console.log(status);
+		if(data.status==200){
+			document.cookie = "AmazonID="+data.data.userID;
+			pageRedirect();
+		}
+	});
+	username.value="";
+	password.value="";
+	spinner.style.display="none";
+	submitButton.disabled=false;
+}
+function ajaxCall(url,data,callback){
+	$.post(url,data,callback);
+}
+function pageRedirect(){
+	window.location.href="mediaplayer2.html";
+}
 
-document.addEventListener("DOMContentLoaded", function(event) {
-  console.log("I am in San Francisco.");
-  
-  var client_id = "6fae9b4f16b845169465e91a48a5148a";
-  var client_secret = "e4dac73b4e434adc9c767aec1daa24ba";
 
-  // var authOptions = {
-  //   url: 'https://accounts.spotify.com/api/token',
-  //   headers: {
-  //     'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-  //   },
-  //   form: {
-  //     grant_type: 'client_credentials'
-  //   },
-  //   json: true
-  // };
-
-  // request.post(authOptions, function(error, response, body) {
-  //   if (!error && response.statusCode === 200) {
-
-  //     // use the access token to access the Spotify Web API
-  //     var token = body.access_token;
-  //     var options = {
-  //       url: 'https://api.spotify.com/v1/users/jmperezperez',
-  //       headers: {
-  //         'Authorization': 'Bearer ' + token
-  //       },
-  //       json: true
-  //     };
-  //     request.get(options, function(error, response, body) {
-  //       console.log(body);
-  //     });
-  //   }
-  // });
-
-});

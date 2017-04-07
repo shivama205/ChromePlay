@@ -104,13 +104,12 @@ function getPlaylistSongs(playlistID) {
     });
 }
 
-
 function getPlaylists() {
-
+    
     $.ajax({
         type: "post",
         url: GetPlaylistsURL,
-        data: JSON.stringify(GetPlaylistsPayload),
+        data: JSON.stringify({ "userID": findCookie() }), // GetPlaylistsPayload),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
@@ -254,6 +253,20 @@ function populateSongs(playlistID, songs) {
 //     // }
 // }
 
+
+
+function findCookie() {
+    var cookies = document.cookie.split(";");
+    for(var k=0;k<cookies.length; k++) {
+        var AmazonID = cookies[k].substr(0, cookies[k].indexOf('='));
+        console.log(AmazonID);
+        if(AmazonID.trim()=="AmazonID"){
+            var ck=cookies[k].split("=");
+            console.log(ck[1]);
+            return ck[1];
+        }
+    }   
+}
 
 document.addEventListener("DOMContentLoaded", function() {
 	getPlaylists();

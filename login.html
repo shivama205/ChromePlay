@@ -1,15 +1,33 @@
-<html>
-<head>
-	<title>
-		Login 
-	</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-	<script type="text/javascript" src="login.js"></script>
-</head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login to Amazon account</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="login.css" >
+    <script src="login.js"></script>
+    <script src="./assets/js/jquery.min.js"></script>
+  </head>
 
-<body>
-	<div id="login">
-		<button id="loginButton">Spotify Login</button>
-	</div>
-</body>
+  <body>
+    <div class="container">
+      <img src="images/amazon.png" alt="Amazon" style="width:100%;height:100%;">
+      <form class="form-signin">
+        <h4 class="form-signin-heading">Sign in to your account</h4>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox" style = "display:none;">
+          <label>
+            <input type="checkbox" value="remember-me" style = "display:none;"> Keep me signed in.
+          </label>
+        </div>
+        <button id="submitButton" class="btn btn-lg btn-block" type="submit" style="margin-bottom:10px;">Sign in</button>
+        <div id="spinner" class="loader" style="margin:0 auto;"></div>
+      </form>
+    </div>
+  </body>
 </html>

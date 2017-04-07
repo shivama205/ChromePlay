@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Chrome plugin for Amazon Music",
+  "description": "Extension for Chrome for Hawkfire customers.",
   "version": "1.0",
 
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "mediaplayer2.html",
+    "default_icon": "./images/icon.png",
+    "default_popup": "login.html",
     "default_title": "Click Here!"
   },
   "permissions": [
