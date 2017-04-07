@@ -9,7 +9,7 @@ exports.init = function(server, db) {
 				};
 
 				if (songsOptions.success) {
-					var songList = songsOptions.data;
+					var songList = JSON.parse(songsOptions.data);
 					var songs = [];
 					for(var i=0; i<songList.length; i++) {
 						var song = songList[i].songID;
@@ -21,12 +21,15 @@ exports.init = function(server, db) {
 							message: songsData.message
 						};
 						if(songsData.success) {
-							var songsDataArray = JSON.stringify(songsData.data);
+							var songsDataArray = JSON.parse(songsData.data);
 							var songDetailList = [];
 							for(var i=0;i<songsDataArray.length;i++) {
 								songDetailList.push({
 									songID: songsDataArray[i]._id,
-									url: songsDataArray[i].songURL
+									url: songsDataArray[i].songURL,
+									name: songsDataArray[i].name,
+									length: songsDataArray[i].length,
+									track: songsDataArray[i].track
 								});
 							}
 							songsResponse.data = {

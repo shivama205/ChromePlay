@@ -152,7 +152,6 @@ exports.login = function (options, cb) {
 					user = 0;
 				}
 				responseHelper(err, user, cb);
-	    		console.log(options.password, isMatch); 
 	    	});
 		} else {
 			responseHelper(err,user, cb);
