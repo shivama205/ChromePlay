@@ -15,10 +15,18 @@
     "https://ajax.googleapis.com/"
   ],
 
-  "background": {
-    "page": "mediaplayer2.html",
-    "persistent": true
-  },
+  // "background": {
+  //   // "page": "popup.html"
+  //   // "persistent": false,
+  //   "scripts": [ "assets/js/jquery.min.js", "assets/js/jquery-ui-1.8.21.custom.min.js", "assets/js/bootstrap.min.js", "popup.js" ]
+  // },
+
+  // "content_scripts": [
+  //       {
+  //           "matches": ["http://*/"],
+  //           "js": ["assets/js/init.js", "assets/js/mediaplayer2.js"]
+  //       }
+  //   ],
 
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
 }
