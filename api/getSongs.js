@@ -2,14 +2,14 @@ exports.init = function(server, db) {
 	server.events.on("app:created", function(app) {		
 		app.post("/getSongs", function(req, res) {
 			var options = req.body;
-			db.getSongIDs(options, function(options) {	
+			db.getSongIDs(options, function(songsOptions) {	
 				var songsResponse = {
-					status: options.status,
-					message: options.message
+					status: songsOptions.status,
+					message: songsOptions.message
 				};
 
-				if (options.success) {
-					var songList = options.data;
+				if (songsOptions.success) {
+					var songList = songsOptions.data;
 					var songs = [];
 					for(var i=0; i<songList.length; i++) {
 						var song = songList[i].songID;
@@ -17,12 +17,12 @@ exports.init = function(server, db) {
 					};
 					db.getSongURLS(songs, function (songsData) {
 						songsResponse = {
-							status: options.status,
-							message: options.message
+							status: songsData.status,
+							message: songsData.message
 						};
 						if(songsData.success) {
+							var songsDataArray = JSON.stringify(songsData.data);
 							var songDetailList = [];
-							var songsDataArray = songsData.data;
 							for(var i=0;i<songsDataArray.length;i++) {
 								songDetailList.push({
 									songID: songsDataArray[i]._id,

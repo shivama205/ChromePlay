@@ -21,24 +21,24 @@ function initUser () {
     	password: { type: String, required: true }
 	});
 	schema.pre('save', function(next) {
-    var user = this;
+	    var user = this;
 
-    // only hash the password if it has been modified (or is new)
-    if (!user.isModified('password')) return next();
+	    // only hash the password if it has been modified (or is new)
+	    if (!user.isModified('password')) return next();
 
-    // generate a salt
-    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-        if (err) return next(err);
+	    // generate a salt
+	    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+	        if (err) return next(err);
 
-        // hash the password using our new salt
-        bcrypt.hash(user.password, salt, function(err, hash) {
-            if (err) return next(err);
+	        // hash the password using our new salt
+	        bcrypt.hash(user.password, salt, function(err, hash) {
+	            if (err) return next(err);
 
-            // override the cleartext password with the hashed one
-            user.password = hash;
-            next();
-        });
-    });
+	            // override the cleartext password with the hashed one
+	            user.password = hash;
+	            next();
+	        });
+	    });
 	});
 
 	schema.methods.comparePassword = function(candidatePassword, cb) {
@@ -81,6 +81,30 @@ function initSongs() {
 	models.songsModel = model;
 }
 
+function responseHelper(error, data, callback) {
+	if (error) {
+		console.log(error);
+		callback({
+			status: 301,
+			success: false,
+			message: "database failure" + error
+		});
+	} else if (!data) {
+		callback({
+			status: 400,
+			success: false,
+			message: "no songs found"
+		});
+	} else {
+		callback({
+			status: 200,
+			message: "OK",
+			success: true,	
+			data: JSON.stringify(data)
+		});
+	}
+}
+
 exports.getSongURLS = function (options, cb) {
 	var model = models.songsModel;
 	var idObjects= [];
@@ -93,27 +117,7 @@ exports.getSongURLS = function (options, cb) {
 		}
 	};
 	model.find(requestObj, function(err,docs) {
-		if (err) {
-			console.log(err);
-			cb({
-				status: 301,
-				success: false,
-				message: "database failure" + err
-			});
-		} else if (!docs) {
-			cb({
-				status: 400,
-				success: false,
-				message: "no songs found"
-			});
-		} else {
-			cb({
-				status: 200,
-				message: "OK",
-				success: true,	
-				data: docs							
-			});
-		}
+		responseHelper(err, docs, cb);
 	});
 };
 
@@ -124,27 +128,7 @@ exports.getSongIDs = function (options, cb) {
 	};
 
 	model.find(requestObj, 'songID', function(err, docs) {
-		if (err) {
-			console.log(err);
-			cb({
-				status: 301,
-				success: false,
-				message: "database failure" + err
-			});
-		} else if (!docs) {
-			cb({
-				status: 400,
-				success: false,
-				message: "no songs found"
-			});
-		} else {
-			cb({
-				status: 200,
-				message: "OK",
-				success: true,	
-				data: docs							
-			});
-		}
+		responseHelper(err, docs, cb);
 	});	
 };
 
@@ -153,62 +137,23 @@ exports.getPlaylist = function (options, cb) {
 	var requestObj = {
 		userID: options.userID
 	};
-	model.find(requestObj, '_id', function(err, docs) {
-		if (err) {
-			console.log(err);
-			cb({
-				status: 301,
-				success: false,
-				message: "database failure" + err
-			});
-		} else if (!docs) {
-			cb({
-				status: 400,
-				success: false,
-				message: "no playlist found"
-			});
-		} else {
-			cb({
-				status: 200,
-				message: "OK",
-				success: true,
-				data: docs
-			});
-		}
+	model.find(requestObj, '_id name' ,function(err, docs) {
+		responseHelper(err, docs, cb);
 	});
 };
 
 exports.login = function (options, cb) {
 	var model = models.userModel;
-	console.log("options.username " + options.username);
-	console.log("options.password " + options.password);	
-
-        // hash the password using our new salt        
-			model.findOne({ username: options.username }, function(err, user) {
-				user.comparePassword(options.password, function(err, isMatch) {
-	            	if (err) throw err;
-	            		console.log(options.password, isMatch); 
-        		});
-				if (err) {
-					cb({
-						status: 301,
-						success: false,
-						message: "database failure" + err
-					});
-				} else if (!user){
-					cb({
-						status: 400,
-						success: false,
-						message: "invalid username or password"
-					});
-				} else {
-					cb({
-						status: 200,
-						success: true,
-						message: "OK",
-						data: user
-					});
-				}		
+    // hash the password using our new salt        
+	model.findOne({ username: options.username }, function(err, user) {
+		user.comparePassword(options.password, function(err, isMatch) {
+        	if (err) {
+        		throw err;
+        	} else {
+				responseHelper(err, user, cb);
+        		console.log(options.password, isMatch); 
+        	}
+    	});
 	});    
 };
 
@@ -217,21 +162,19 @@ exports.signup = function (options, cb) {
 	console.log("username " + user.username);
 	console.log("password " + user.password);
 
-        // hash the password using our new salt
-        
-            user.save(function (err, user) {
-			if (err) {
-				console.log("user save failed");
-				console.log(err);
-				cb({
-					success: false,
-					error: err,
-				});
-			} else {
-				user.success = true;
-				cb(user);
-			}		    
-        });    
+    user.save(function (err, user) {
+		if (err) {
+			console.log("user save failed");
+			console.log(err);
+			cb({
+				success: false,
+				error: err,
+			});
+		} else {
+			user.success = true;
+			cb(user);
+		}		    
+    });    
 }
 
 exports.createPlaylist = function (options, cb) {
@@ -239,19 +182,19 @@ exports.createPlaylist = function (options, cb) {
 	console.log("name " + playlist.name);
 	console.log("userID " + playlist.userID);        
         
-            playlist.save(function (err, playlist) {
-			if (err) {
-				console.log("playlist save failed");
-				console.log(err);
-				cb({
-					success: false,
-					error: err,
-				});
-			} else {
-				playlist.success = true;
-				cb(playlist);
-			}		    
-        });    
+    playlist.save(function (err, playlist) {
+		if (err) {
+			console.log("playlist save failed");
+			console.log(err);
+			cb({
+				success: false,
+				error: err,
+			});
+		} else {
+			playlist.success = true;
+			cb(playlist);
+		}		    
+	});    
 }
 
 exports.loadSong = function (options, cb) {
@@ -259,38 +202,38 @@ exports.loadSong = function (options, cb) {
 	console.log("song name " + song.name);
 	console.log("song URL " + song.songURL);        
         
-            song.save(function (err, song) {
-			if (err) {
-				console.log("song save failed");
-				console.log(err);
-				cb({
-					success: false,
-					error: err,
-				});
-			} else {
-				song.success = true;
-				cb(song);
-			}		    
-        });    
+    song.save(function (err, song) {
+		if (err) {
+			console.log("song save failed");
+			console.log(err);
+			cb({
+				success: false,
+				error: err,
+			});
+		} else {
+			song.success = true;
+			cb(song);
+		}		    
+    });    
 }
 
 exports.SongPlaylistMap = function (options, cb) {
 	var map = new models.songsplaylistModel(options);
 	console.log("playlist ID " + map.playlistID);
 	console.log("song ID " + map.songID);           
-            map.save(function (err, map) {
-			if (err) {
-				console.log("song playlist map save failed");
-				console.log(err);
-				cb({
-					success: false,
-					error: err,
-				});
-			} else {
-				map.success = true;
-				cb(map);
-			}		    
-        });    
+    map.save(function (err, map) {
+		if (err) {
+			console.log("song playlist map save failed");
+			console.log(err);
+			cb({
+				success: false,
+				error: err,
+			});
+		} else {
+			map.success = true;
+			cb(map);
+		}		    
+    });    
 }
 
 exports.connect = function () {
