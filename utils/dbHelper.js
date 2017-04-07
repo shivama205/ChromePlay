@@ -93,7 +93,7 @@ function responseHelper(error, data, callback) {
 		callback({
 			status: 400,
 			success: false,
-			message: "no songs found"
+			message: "bad request"
 		});
 	} else {
 		callback({
@@ -146,14 +146,17 @@ exports.login = function (options, cb) {
 	var model = models.userModel;
     // hash the password using our new salt        
 	model.findOne({ username: options.username }, function(err, user) {
-		user.comparePassword(options.password, function(err, isMatch) {
-        	if (err) {
-        		throw err;
-        	} else {
+		if (user) {
+			user.comparePassword(options.password, function(err, isMatch) {
+				if (!isMatch) {
+					user = 0;
+				}
 				responseHelper(err, user, cb);
-        		console.log(options.password, isMatch); 
-        	}
-    	});
+	    		console.log(options.password, isMatch); 
+	    	});
+		} else {
+			responseHelper(err,user, cb);
+		}	
 	});    
 };
 
