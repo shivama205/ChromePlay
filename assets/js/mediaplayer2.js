@@ -1,13 +1,17 @@
 
 
 
-function getPlaylistSongs(playlist) {
-    return songs[playlist];
-}
+// function getPlaylistSongs(playlist) {
+//     console.log(playlist);
+//     console.log(songs[playlist]);
+//     return songs[playlist];
+// }
 
 function getTracks(playlist) {
     console.log(playlist);
-    return getPlaylistSongs(playlist);
+    console.log(playlistSongs[playlist]);
+    return playlistSongs[playlist];
+    // return getPlaylistSongs(playlist);
 }
 
 
@@ -98,20 +102,20 @@ function playTracks(playlist) {
                 // console.log(tracks[id]);
                 npTitle.text(tracks[id].name);
                 index = id;
-                audio.src = mediaPath + tracks[id].file + extension;
+                audio.src = mediaPath + tracks[id].url + extension;
             },
             loadTrack = function (id) {
                 $('.plSel').removeClass('plSel');
                 $('#plList li:eq(' + id + ')').addClass('plSel');
                 npTitle.text(tracks[id].name);
                 index = id;
-                audio.src = mediaPath + tracks[id].file + extension;
+                audio.src = mediaPath + tracks[id].url + extension;
             },
             playTrack = function (id) {
                 loadTrackById(id);
                 audio.play();
             };
-        extension = audio.canPlayType('audio/mpeg') ? '.mp3' : audio.canPlayType('audio/ogg') ? '.ogg' : '';
+        // extension = audio.canPlayType('audio/mpeg') ? '.mp3' : audio.canPlayType('audio/ogg') ? '.ogg' : '';
         loadTrack(index);
     }
 
