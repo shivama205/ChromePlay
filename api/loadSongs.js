@@ -1,13 +1,14 @@
 exports.init = function(server, db) {
 	server.events.on("app:created", function(app) {
-		app.post("/signup", function(req, res) {
+		app.post("/loadSong", function(req, res) {
 			var options = req.body;
-			var signup = db.signup(options, function(options) {
+			var signup = db.loadSong(options, function(options) {
 				var resData = {};
 				if (options.success) {
-					resData.userId = options._id;
-					resData.username = options.username;
-					resData.password = options.password;
+					resData.track = options.track;
+					resData.songName = options.name;
+					resData.songlength = options.length;
+					resData.file = options.songURL;
 				} else {
 					res.status = 400;
 					res.message = "bad request";

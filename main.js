@@ -2,7 +2,10 @@ var API = [
 	require("./api/login"),
 	require("./api/signup"),
 	require("./api/getPlaylist"),
-	require("./api/getSongs")
+	require("./api/getSongs"),
+	require("./api/createPlaylist"),
+	require("./api/loadSongs"),
+	require("./api/loadSongsMap")
 ];
 var server = require("./server");
 var db = require("./utils/dbHelper");

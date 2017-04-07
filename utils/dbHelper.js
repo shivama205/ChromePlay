@@ -1,12 +1,14 @@
 var mongoose = require('mongoose');
 var mongodb = require('mongodb');
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
 
 var Schema = mongoose.Schema;
 var Model = mongoose.model.bind(mongoose);
 var models = {};
 var db;
 
-function initHelper() {
+function initHelper() {	
 	initUser();
 	initPlaylist();
 	initPlaylistSongsMap();
@@ -15,15 +17,44 @@ function initHelper() {
 
 function initUser () {
 	var schema = new Schema ({
-		username: String,
-		password: String,
+		username: { type: String, required: true, index: { unique: true } },
+    	password: { type: String, required: true }
 	});
+	schema.pre('save', function(next) {
+    var user = this;
+
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+        if (err) return next(err);
+
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
+	});
+
+	schema.methods.comparePassword = function(candidatePassword, cb) {
+	    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+	        if (err) return cb(err);
+	        cb(null, isMatch);
+	    });
+	};
+	module.exports = mongoose.model('users', schema);
 	var model = Model('users', schema);
 	models.userModel = model;
 }
 
 function initPlaylist () {
 	var schema = new Schema ({
+		name: String,
 		userID: String
 	});
 	var model = Model('playlists', schema);
@@ -41,6 +72,9 @@ function initPlaylistSongsMap(){
 
 function initSongs() {
 	var schema = new Schema({
+		track:String,
+		name: String,
+		length:String,
 		songURL: String
 	});
 	var model = Model('songs', schema)
@@ -146,47 +180,117 @@ exports.getPlaylist = function (options, cb) {
 
 exports.login = function (options, cb) {
 	var model = models.userModel;
-	model.findOne(options, function(err, user) {
-		if (err) {
-			cb({
-				status: 301,
-				success: false,
-				message: "database failure" + err
-			});
-		} else if (!user){
-			cb({
-				status: 400,
-				success: false,
-				message: "invalid username or password"
-			});
-		} else {
-			cb({
-				status: 200,
-				success: true,
-				message: "OK",
-				data: user
-			});
-		}
-	});
+	console.log("options.username " + options.username);
+	console.log("options.password " + options.password);	
+
+        // hash the password using our new salt        
+			model.findOne({ username: options.username }, function(err, user) {
+				user.comparePassword(options.password, function(err, isMatch) {
+	            	if (err) throw err;
+	            		console.log(options.password, isMatch); 
+        		});
+				if (err) {
+					cb({
+						status: 301,
+						success: false,
+						message: "database failure" + err
+					});
+				} else if (!user){
+					cb({
+						status: 400,
+						success: false,
+						message: "invalid username or password"
+					});
+				} else {
+					cb({
+						status: 200,
+						success: true,
+						message: "OK",
+						data: user
+					});
+				}		
+	});    
 };
 
 exports.signup = function (options, cb) {
 	var user = new models.userModel(options);
-	var savedUser;
-	user.save(function (err, user) {
-		if (err) {
-			console.log("save failed");
-			console.log(err);
-			cb({
-				success: false,
-				error: err,
-			});
-		} else {
-			user.success = true;
-			cb(user);
-		}
-	});
-	return savedUser;
+	console.log("username " + user.username);
+	console.log("password " + user.password);
+
+        // hash the password using our new salt
+        
+            user.save(function (err, user) {
+			if (err) {
+				console.log("user save failed");
+				console.log(err);
+				cb({
+					success: false,
+					error: err,
+				});
+			} else {
+				user.success = true;
+				cb(user);
+			}		    
+        });    
+}
+
+exports.createPlaylist = function (options, cb) {
+	var playlist = new models.playlistModel(options);
+	console.log("name " + playlist.name);
+	console.log("userID " + playlist.userID);        
+        
+            playlist.save(function (err, playlist) {
+			if (err) {
+				console.log("playlist save failed");
+				console.log(err);
+				cb({
+					success: false,
+					error: err,
+				});
+			} else {
+				playlist.success = true;
+				cb(playlist);
+			}		    
+        });    
+}
+
+exports.loadSong = function (options, cb) {
+	var song = new models.songsModel(options);
+	console.log("song name " + song.name);
+	console.log("song URL " + song.songURL);        
+        
+            song.save(function (err, song) {
+			if (err) {
+				console.log("song save failed");
+				console.log(err);
+				cb({
+					success: false,
+					error: err,
+				});
+			} else {
+				song.success = true;
+				cb(song);
+			}		    
+        });    
+}
+
+exports.SongPlaylistMap = function (options, cb) {
+	var map = new models.songsplaylistModel(options);
+	console.log("playlist ID " + map.playlistID);
+	console.log("song ID " + map.songID);           
+            map.save(function (err, map) {
+			if (err) {
+				console.log("song playlist map save failed");
+				console.log(err);
+				cb({
+					success: false,
+					error: err,
+				});
+			} else {
+				map.success = true;
+				cb(map);
+			}		    
+        });    
 }
 
 exports.connect = function () {
